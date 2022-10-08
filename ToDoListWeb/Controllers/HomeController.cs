@@ -15,14 +15,14 @@ namespace ToDoListWeb.Controllers
             _logger = logger;
         }
 
-        [Authorize(Roles = "admin, user")]
+        //[Authorize(Roles = "admin, user")]
         public IActionResult Index()
         {
             return View();
             //string role = User.FindFirst(x => x.Type == ClaimsIdentity.DefaultRoleClaimType).Value;
             //return Content($"Your role: {role}");
         }
-        [Authorize(Roles = "admin")]
+        //[Authorize(Roles = "admin")]
         public IActionResult About()
         {
             return Content("Admin only login");
