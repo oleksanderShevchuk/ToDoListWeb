@@ -1,9 +1,27 @@
-﻿<ul class="navbar-nav">
+﻿@using Microsoft.AspNetCore.Identity
 
-    <li class="nav-item">
-        <a class="nav-link" asp-controller="Account" asp-action="Register">Register</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" asp-controller="Account" asp-action="Login">Login</a>
-    </li>
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManader
+
+<ul class="navbar-nav">
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <li class="nav-item">
+            <a class="nav-link" href="#">Hello @UserManader.GetUserName(User)</a>
+        </li>
+        <li class="nav-item">
+            <form id="logoutForm" method="post" class="nav-inline" asp-controller="Account" asp-action="Logout">
+                <button type="submit" class="btn nav-link">Logout</button>
+            </form>
+        </li>
+    }
+    else
+    {
+        <li class="nav-item">
+            <a class="nav-link" asp-controller="Account" asp-action="Register">Register</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" asp-controller="Account" asp-action="Login">Login</a>
+        </li>
+    }
 </ul>
