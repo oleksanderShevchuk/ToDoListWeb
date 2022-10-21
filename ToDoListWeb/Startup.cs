@@ -28,7 +28,11 @@ namespace ToDoListWeb
                 options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromSeconds(30);
                 options.Lockout.MaxFailedAccessAttempts = 2;
             });
-
+            services.AddAuthentication().AddFacebook(options =>
+            {
+                options.AppId = "661653268910622";
+                options.AppSecret = "ff8cc93759443ddc6dd9d1c6b56543ee";
+            });
             services.AddControllersWithViews();
         }
 
