@@ -28,6 +28,10 @@ namespace ToDoListWeb
                 options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromSeconds(30);
                 options.Lockout.MaxFailedAccessAttempts = 2;
             });
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.AccessDeniedPath = new PathString("/Home/AccessDenied");
+            });
             services.AddAuthentication().AddFacebook(options =>
             {
                 options.AppId = "661653268910622";

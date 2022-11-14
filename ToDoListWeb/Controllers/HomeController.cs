@@ -18,7 +18,6 @@ namespace ToDoListWeb.Controllers
             _userManager = userManager;
         }
 
-        //[Authorize(Roles = "admin, user")]
         public async Task<IActionResult> Index()
         {
             var user = await _userManager.GetUserAsync(User);
@@ -32,13 +31,16 @@ namespace ToDoListWeb.Controllers
             }
             return View();
         }
-        //[Authorize(Roles = "admin")]
         public IActionResult About()
         {
             return Content("Admin only login");
         }
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public IActionResult Privacy()
+        {
+            return View();
+        }
+        public IActionResult AccessDenied()
         {
             return View();
         }
