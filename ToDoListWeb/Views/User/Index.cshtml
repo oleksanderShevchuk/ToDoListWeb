@@ -42,6 +42,9 @@
                                 <a asp-action="Edit" asp-route-userId="@item.Id" class="btn btn-primary mx-2 rounded-2" 
                                 style="cursor:pointer" width="50%"><i class="bi bi-pencil-square"></i> Edit</a>
 
+                                 <a asp-action="ManageUserClaims" asp-route-userId="@item.Id" class="btn btn-info text-white @*mx-2 rounded-2*@" 
+                                style="cursor:pointer" width="50%">Claim</a>
+
                                 @if (item.LockoutEnd == null || item.LockoutEnd < DateTime.Now)
                                 {
                                     // we want to show them the option to lock

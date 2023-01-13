@@ -19,14 +19,15 @@ namespace ToDoListWeb
         {
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-            services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
+            services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders().AddDefaultUI();
             services.AddTransient<IEmailSender, MailJetEmailSender>(); 
             services.Configure<IdentityOptions>(options =>
             {
                 options.Password.RequiredLength = 5;
                 options.Password.RequireLowercase = true;
                 options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromSeconds(30);
-                options.Lockout.MaxFailedAccessAttempts = 2;
+                options.Lockout.MaxFailedAccessAttempts = 5;
             });
             services.ConfigureApplicationCookie(options =>
             {
@@ -38,6 +39,7 @@ namespace ToDoListWeb
                 options.AppSecret = "ff8cc93759443ddc6dd9d1c6b56543ee";
             });
             services.AddControllersWithViews();
+            
         }
 
         public void Configure(IApplicationBuilder app)
@@ -57,6 +59,7 @@ namespace ToDoListWeb
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapRazorPages();
             });
         }
     }
