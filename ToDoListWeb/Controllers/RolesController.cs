@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using ToDoListWeb.Data;
 
@@ -37,6 +38,7 @@ namespace ToDoListWeb.Controllers
             }
         }
         [HttpPost]
+        [Authorize (Policy = "OnlySuperAdminChecker")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Upsert(IdentityRole roleObj)
         {
@@ -70,6 +72,7 @@ namespace ToDoListWeb.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = "OnlySuperAdminChecker")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(string id)
         {

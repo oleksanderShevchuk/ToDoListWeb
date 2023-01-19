@@ -17,6 +17,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using ToDoListWeb.Models;
 
 namespace ToDoListWeb.Areas.Identity.Pages.Account
 {
@@ -84,6 +85,8 @@ namespace ToDoListWeb.Areas.Identity.Pages.Account
             [Required]
             [EmailAddress]
             public string Email { get; set; }
+            [Required]
+            public string Name { get; set; }
         }
         
         public IActionResult OnGet() => RedirectToPage("./Login");
@@ -151,7 +154,8 @@ namespace ToDoListWeb.Areas.Identity.Pages.Account
 
             if (ModelState.IsValid)
             {
-                var user = CreateUser();
+                // var user = CreateUser();
+                var user = new ApplicationUser { UserName = Input.Email, Email = Input.Email, Name = Input.Name, DateCreated = DateTime.Now };
 
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
