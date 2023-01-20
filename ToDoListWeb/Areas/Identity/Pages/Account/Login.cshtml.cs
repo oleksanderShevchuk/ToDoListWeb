@@ -119,13 +119,14 @@ namespace ToDoListWeb.Areas.Identity.Pages.Account
                 var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
-                    var user = _db.ApplicationUser.FirstOrDefault(u => u.Email.ToLower() == Input.Email.ToLower());
-                    var claim = await _userManager.GetClaimsAsync(user);
-                    if (claim.Count > 0) 
-                    { 
-                        await _userManager.RemoveClaimAsync(user, claim.FirstOrDefault(u => u.Type == "FirstName"));
-                    }
-                    await _userManager.AddClaimAsync(user, new System.Security.Claims.Claim("FirstName", user.Name));
+                    //var user = _db.ApplicationUser.FirstOrDefault(u => u.Email.ToLower() == Input.Email.ToLower());
+
+                    //var claim = await _userManager.GetClaimsAsync(user);
+                    //if (claim.Count > 0)
+                    //{
+                    //    await _userManager.RemoveClaimAsync(user, claim.FirstOrDefault(u => u.Type == "FirstName"));
+                    //}
+                    //await _userManager.AddClaimAsync(user, new System.Security.Claims.Claim("FirstName", user.Name));
 
                     _logger.LogInformation("User logged in.");
                     return LocalRedirect(returnUrl);

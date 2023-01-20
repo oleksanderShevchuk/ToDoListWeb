@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq;
 using ToDoListWeb.Data;
 using ToDoListWeb.Models;
 
@@ -9,13 +11,25 @@ namespace ToDoListWeb.Controllers
     public class TasksController : Controller
     {
         private readonly ApplicationDbContext db;
-        public TasksController(ApplicationDbContext db)
+        private readonly UserManager<IdentityUser> _userManager;
+        public TasksController(ApplicationDbContext db, UserManager<IdentityUser> userManager)
         {
             this.db = db;
+            _userManager = userManager;
         }
         public IActionResult Index()
         {
-            IEnumerable<Tasks> CatagoreList = db.Tasks;
+            //IEnumerable<Tasks> CatagoreList = db.Tasks;
+            List<Tasks> CatagoreList = new List<Tasks>();
+            var user = db.Users.FirstOrDefault(u => u.UserName == User.Identity.Name);
+
+            foreach (var item in db.Tasks)
+            {
+                if (item.UserId == user.Id)
+                {
+                    CatagoreList.Add(item);
+                }
+            }
             return View(CatagoreList);
         }
         // GET
@@ -26,10 +40,14 @@ namespace ToDoListWeb.Controllers
         // POST
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(Tasks category)
+        public async Task<IActionResult> Create(Tasks category)
         {
+            //var user = db.Users.FirstOrDefault(u => u.UserName == User.Identity.Name);
+            var user = await _userManager.GetUserAsync(User);
+            category.UserId = user.Id.ToString();
+
             if (ModelState.IsValid)
-            {
+            { 
                 db.Tasks.Add(category);
                 db.SaveChanges();
                 TempData["success"] = "Task created successfully";
@@ -54,8 +72,10 @@ namespace ToDoListWeb.Controllers
         // POST
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(Tasks category)
+        public async Task<IActionResult> Edit(Tasks category)
         {
+            var user = await _userManager.GetUserAsync(User);
+            category.UserId = user.Id.ToString();
             if (ModelState.IsValid)
             {
                 db.Tasks.Update(category);
