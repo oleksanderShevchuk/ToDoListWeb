@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using ToDoListWeb.Authorize;
 using ToDoListWeb.Data;
+using ToDoListWeb.Filters;
 using ToDoListWeb.Service;
 
 namespace ToDoListWeb
@@ -43,23 +44,11 @@ namespace ToDoListWeb
 
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("Admin", policy => policy.RequireRole("Admin"));
-                options.AddPolicy("UserAndAdmin", policy => policy.RequireRole("Admin").RequireRole("User"));
-                options.AddPolicy("Admin_CreateAccess", policy => policy.RequireRole("Admin").RequireClaim("create", "True"));
-                options.AddPolicy("Admin_Create_Edit_DeleteAccess", policy => policy.RequireRole("Admin").RequireClaim("create", "True")
-                .RequireClaim("edit", "True")
-                .RequireClaim("delete", "True"));
+                options.AddPolicy(PolicyAccess.UserClaimOrAdmin, policy => policy.RequireAssertion(context =>
+                AuthorizeUser(context)));
 
-                options.AddPolicy("Admin_Create_Edit_DeleteAccess_Or_SuperAdmin", policy => policy.RequireAssertion(context =>
-                AuthorizeAdminWithClaimsOrSuperAdmin(context)));
-                options.AddPolicy("OnlySuperAdminChecker", policy => policy.Requirements.Add(new OnlySuperAdminChecker()));
-                options.AddPolicy("AdminWithMoreThan1000Days", policy => policy.Requirements.Add(new AdminWithMoreThan1000DaysRequirement(1000)));
-                options.AddPolicy("FirstNameAuth", policy => policy.Requirements.Add(new FirstNameAuthRequirement("oleksandr")));
             });
-            services.AddScoped<IAuthorizationHandler, AdminWithOver1000DaysHandler>();
-            services.AddScoped<IAuthorizationHandler, FirstNameAuthHandler>();
-            services.AddScoped<INumberOfDaysForAccount, NumberOfDaysForAccount>();
-            services.AddControllersWithViews();
+            services.AddControllersWithViews(option => option.Filters.Add(new ValidationFilter()));
             services.AddRazorPages();
         }
 
@@ -84,12 +73,12 @@ namespace ToDoListWeb
             });
         }
 
-        private bool AuthorizeAdminWithClaimsOrSuperAdmin(AuthorizationHandlerContext context)
+        private bool AuthorizeUser(AuthorizationHandlerContext context)
         {
-            return (context.User.IsInRole("Admin") && context.User.HasClaim(c => c.Type == "Create" && c.Value == "True")
-                        && context.User.HasClaim(c => c.Type == "Edit" && c.Value == "True")
-                        && context.User.HasClaim(c => c.Type == "Delete" && c.Value == "True")
-                    ) || context.User.IsInRole("SuperAdmin");
+            return ( context.User.HasClaim(c => c.Type == "Create" && c.Value == bool.TrueString)
+                        || context.User.HasClaim(c => c.Type == "Edit" && c.Value == bool.TrueString)
+                        || context.User.HasClaim(c => c.Type == "Delete" && c.Value == bool.TrueString)
+                    ) || context.User.IsInRole(RoleAccess.Admin);
         }
     }
 }
