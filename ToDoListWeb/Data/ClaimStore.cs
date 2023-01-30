@@ -9,6 +9,10 @@ namespace ToDoListWeb.Data
             new Claim("Create", "Create"),
             new Claim("Edit", "Edit"),
             new Claim("Delete", "Delete"),
+            new Claim("Index", "Index"),
+            new Claim("LockUnlock", "LockUnlock"),
+            new Claim("ManageUserClaims", "ManageUserClaims"),
+            new Claim("Upsert", "Upsert"),
         };
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using ToDoListWeb.Data;
 
 namespace ToDoListWeb.Controllers
 {
@@ -13,61 +14,24 @@ namespace ToDoListWeb.Controllers
             return View();
         }
 
-        [Authorize]
-        //Accessible by logged in users.
-        public IActionResult AuthorizedAccess()
-        {
-            return View();
-        }
-        [Authorize(Roles = "User")]
+        [Authorize(Roles = RoleAccess.User)]
         //Accessible by users who have user role
         public IActionResult UserAccess()
         {
             return View();
         }
-        [Authorize(Roles = "User,Admin")]
-        //Accessible by users who have user or admin role
-        public IActionResult UserOrAdminAccess()
-        {
-            return View();
-        }
-        [Authorize(Policy = "UserAndAdmin")]
-        //Accessible by users who have user or admin role
-        public IActionResult UserAndAdminAccess()
-        {
-            return View();
-        }
-        [Authorize(Policy = "Admin")]
+
+        [Authorize(Roles = RoleAccess.Admin)]
         //Accessible by users who have admin role
         public IActionResult AdminAccess()
         {
             return View();
         }
-        [Authorize(Policy = "Admin_CreateAccess")]
-        //Accessible by Admin users with a claim of create to be True
-        public IActionResult Admin_CreateAccess()
-        {
-            return View();
-        }
-        [Authorize(Policy = "Admin_Create_Edit_DeleteAccess")]
-        //Accessible by Admin user with claim of Create Edit and Delete (AND NOT OR)
-        public IActionResult Admin_Create_Edit_DeleteAccess()
-        {
-            return View();
-        }
-        [Authorize(Policy = "Admin_Create_Edit_DeleteAccess_Or_SuperAdmin")]
-        //accessible by Admin user with create, edit and delete (AND NOT OR), OR if the user role is superAdmin
-        public IActionResult Admin_Create_Edit_DeleteAccess_Or_SuperAdmin()
-        {
-            return View();
-        }
-        [Authorize(Policy = "AdminWithMoreThan1000Days")]
-        public IActionResult onlyShevchuk()
-        {
-            return View();
-        }
-        [Authorize(Policy = "FirstNameAuth")]
-        public IActionResult FirstNameAuth()
+
+        // Available to users who have rights to edit users or claims,
+        // block and unblock, delete or a user with the Admin role
+        [Authorize(Policy = PolicyAccess.UserClaimOrAdmin)]
+        public IActionResult CreateOrEditOrDeleteAccessOrAdmin()
         {
             return View();
         }

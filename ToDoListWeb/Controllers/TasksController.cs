@@ -19,7 +19,6 @@ namespace ToDoListWeb.Controllers
         }
         public IActionResult Index()
         {
-            //IEnumerable<Tasks> CatagoreList = db.Tasks;
             List<Tasks> CatagoreList = new List<Tasks>();
             var user = db.Users.FirstOrDefault(u => u.UserName == User.Identity.Name);
 

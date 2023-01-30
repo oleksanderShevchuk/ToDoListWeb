@@ -2,21 +2,25 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using ToDoListWeb.Data;
+using ToDoListWeb.Filters;
 
 namespace ToDoListWeb.Controllers
 {
+    [Authorize]
     public class RolesController : Controller
     {
         private readonly ApplicationDbContext _db;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
-        public RolesController(ApplicationDbContext db, UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager)
+        public RolesController(ApplicationDbContext db, UserManager<IdentityUser> userManager, 
+            RoleManager<IdentityRole> roleManager)
         {
             _db = db;
             _userManager = userManager;
             _roleManager = roleManager;
         }
 
+        [ClaimRequirements(Claims.Index)]
         public IActionResult Index()
         {
             var roles = _db.Roles.ToList();
@@ -38,7 +42,7 @@ namespace ToDoListWeb.Controllers
             }
         }
         [HttpPost]
-        [Authorize (Policy = "OnlySuperAdminChecker")]
+        [ClaimRequirements(Claims.Upsert)]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Upsert(IdentityRole roleObj)
         {
@@ -72,7 +76,7 @@ namespace ToDoListWeb.Controllers
         }
 
         [HttpPost]
-        [Authorize(Policy = "OnlySuperAdminChecker")]
+        [ClaimRequirements(Claims.Delete)]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(string id)
         {

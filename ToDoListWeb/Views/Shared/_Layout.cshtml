@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using ToDoListWeb.Data;
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -41,16 +42,9 @@
                             </a>
                             <div class="dropdown-menu" aria-labelledby="navbarDropdown">  
                                 <a class="dropdown-item" asp-controller="AccessChecker" asp-action="AllAccess">All Access</a>
-                                <a class="dropdown-item" asp-controller="AccessChecker" asp-action="AuthorizedAccess">Authorized Access</a>
                                 <a class="dropdown-item" asp-controller="AccessChecker" asp-action="UserAccess">User Access</a>
-                                <a class="dropdown-item" asp-controller="AccessChecker" asp-action="UserOrAdminAccess">UserOrAdmin Access</a>
-                                <a class="dropdown-item" asp-controller="AccessChecker" asp-action="UserAndAdminAccess">UserAndAdmin Access</a>
                                 <a class="dropdown-item" asp-controller="AccessChecker" asp-action="AdminAccess">Admin Access</a>
-                                <a class="dropdown-item" asp-controller="AccessChecker" asp-action="Admin_CreateAccess">Admin - Create only Claim Access</a>
-                                <a class="dropdown-item" asp-controller="AccessChecker" asp-action="Admin_Create_Edit_DeleteAccess">Admin - Create,Edit & Delete Claim Access</a>
-                                <a class="dropdown-item" asp-controller="AccessChecker" asp-action="Admin_Create_Edit_DeleteAccess_Or_SuperAdmin">Admin - Create,Edit & Delete Claim Access || Super Admin</a>
-                                <a class="dropdown-item" asp-controller="AccessChecker" asp-action="OnlyShevchuk">Only Shevchuk</a>
-                                <a class="dropdown-item" asp-controller="AccessChecker" asp-action="FirstNameAuth">FirstNameAuth</a>
+                                <a class="dropdown-item" asp-controller="AccessChecker" asp-action="CreateOrEditOrDeleteAccessOrAdmin">CreateOrEditOrDeleteAccessOrAdmin</a>
                             </div>
                         </li>
                     </ul>

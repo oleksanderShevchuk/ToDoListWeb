@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Security.Claims;
 using ToDoListWeb.Data;
+using ToDoListWeb.Filters;
 using ToDoListWeb.Models;
 
 namespace ToDoListWeb.Controllers
@@ -19,6 +19,7 @@ namespace ToDoListWeb.Controllers
             _userManager = userManager;
         }
 
+        //[ClaimRequirements(Claims.Index)]
         public IActionResult Index()
         {
             var userList = _db.ApplicationUser.ToList();
@@ -63,40 +64,32 @@ namespace ToDoListWeb.Controllers
         }
 
         [HttpPost]
+        [ClaimRequirements(Claims.Edit)]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(ApplicationUser user)
         {
-            if (ModelState.IsValid)
+            var objFromDb = _db.ApplicationUser.FirstOrDefault(u => u.Id == user.Id);
+            if (objFromDb == null)
             {
-                var objFromDb = _db.ApplicationUser.FirstOrDefault(u => u.Id == user.Id);
-                if (objFromDb == null)
-                {
-                    return NotFound();
-                }
-                var userRole = _db.UserRoles.FirstOrDefault(u => u.UserId == objFromDb.Id);
-                if (userRole != null)
-                {
-                    var previousRoleName = _db.Roles.Where(u => u.Id == userRole.RoleId).Select(e => e.Name).FirstOrDefault();
-                    //removing the old role
-                    await _userManager.RemoveFromRoleAsync(objFromDb, previousRoleName);
-                }
-                //add new role
-                await _userManager.AddToRoleAsync(objFromDb, _db.Roles.FirstOrDefault(u => u.Id == user.RoleId).Name);
-                objFromDb.Name = user.Name;
-                _db.SaveChanges();
-                TempData["success"] = "User has been edited successfully.";
-                return RedirectToAction(nameof(Index));
+                return NotFound();
             }
-
-            user.RoleList = _db.Roles.Select(u => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem
+            var userRole = _db.UserRoles.FirstOrDefault(u => u.UserId == objFromDb.Id);
+            if (userRole != null)
             {
-                Text = u.Name,
-                Value = u.Id
-            });
-            return View(user);
+                var previousRoleName = _db.Roles.Where(u => u.Id == userRole.RoleId).Select(e => e.Name).FirstOrDefault();
+                //removing the old role
+                await _userManager.RemoveFromRoleAsync(objFromDb, previousRoleName);
+            }
+            //add new role
+            await _userManager.AddToRoleAsync(objFromDb, _db.Roles.FirstOrDefault(u => u.Id == user.RoleId).Name);
+            objFromDb.Name = user.Name;
+            _db.SaveChanges();
+            TempData["success"] = "User has been edited successfully.";
+            return RedirectToAction(nameof(Index));
         }
         
         [HttpPost]
+        [ClaimRequirements(Claims.LockUnlock)]
         public IActionResult LockUnlock(string userId)
         {
             var objFromDb = _db.ApplicationUser.FirstOrDefault(u => u.Id == userId);
@@ -122,6 +115,7 @@ namespace ToDoListWeb.Controllers
         }
 
         [HttpPost]
+        [ClaimRequirements(Claims.Delete)]
         public IActionResult Delete(string userId)
         {
             var objFromDb = _db.ApplicationUser.FirstOrDefault(u => u.Id == userId);
@@ -167,6 +161,7 @@ namespace ToDoListWeb.Controllers
         }
 
         [HttpPost]
+        [ClaimRequirements(Claims.ManageUserClaims)]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ManageUserClaims(UserClaimsViewModel userClaimsViewModel)
         {

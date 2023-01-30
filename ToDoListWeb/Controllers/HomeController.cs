@@ -2,11 +2,13 @@
 using Microsoft.AspNetCore.Authorization;
 using ToDoListWeb.Models;
 using System.Diagnostics;
-using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
+using ToDoListWeb.Filters;
+using ToDoListWeb.Data;
 
 namespace ToDoListWeb.Controllers
 {
+
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -17,7 +19,6 @@ namespace ToDoListWeb.Controllers
             _logger = logger;
             _userManager = userManager;
         }
-
         public async Task<IActionResult> Index()
         {
             var user = await _userManager.GetUserAsync(User);
@@ -35,7 +36,7 @@ namespace ToDoListWeb.Controllers
         {
             return Content("Admin only login");
         }
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = RoleAccess.Admin)]
         public IActionResult Privacy()
         {
             return View();
