@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ToDoListWeb.Models
 {
@@ -11,5 +10,6 @@ namespace ToDoListWeb.Models
         public string? Name { get; set; }
         public DateTime CreatedDate { get; set; } = DateTime.Now;
         public string? UserId { get; set; }
+        public string NoteName { get; set; } = "None";
     }
 }

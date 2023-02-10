@@ -249,7 +249,7 @@ namespace ToDoListWeb.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Tasks");
+                    b.ToTable("Tasks", (string)null);
                 });
 
             modelBuilder.Entity("ToDoListWeb.Models.ApplicationUser", b =>
