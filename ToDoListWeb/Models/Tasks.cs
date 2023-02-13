@@ -10,6 +10,6 @@ namespace ToDoListWeb.Models
         public string? Name { get; set; }
         public DateTime CreatedDate { get; set; } = DateTime.Now;
         public string? UserId { get; set; }
-        public string NoteName { get; set; } = "None";
+        public string? Note { get; set; }
     }
 }
