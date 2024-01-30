@@ -19,7 +19,7 @@ namespace ToDoListWeb.Controllers
             _userManager = userManager;
         }
 
-        //[ClaimRequirements(Claims.Index)]
+        [ClaimRequirements(Claims.Index)]
         public IActionResult Index()
         {
             var userList = _db.ApplicationUser.ToList();

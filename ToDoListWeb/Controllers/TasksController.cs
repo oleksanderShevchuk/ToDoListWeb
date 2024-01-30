@@ -32,8 +32,26 @@ namespace ToDoListWeb.Controllers
             return View(CatagoreList);
         }
         // GET
+        public IActionResult Details(int? id)
+        {
+            if (id == null || id == 0)
+            {
+                return NotFound();
+            }
+            ViewBag.Categories = db.Categories;
+            ViewBag.Statuses = db.Statuses;
+            var categoryFormDb = db.Tasks.Find(id);
+            if (categoryFormDb == null)
+            {
+                return NotFound();
+            }
+            return View(categoryFormDb);
+        }
+        // GET
         public IActionResult Create()
         {
+            ViewBag.Categories = db.Categories;
+            ViewBag.Statuses = db.Statuses;
             return View();
         }
         // POST
@@ -61,6 +79,8 @@ namespace ToDoListWeb.Controllers
             {
                 return NotFound();
             }
+            ViewBag.Categories = db.Categories;
+            ViewBag.Statuses = db.Statuses;
             var categoryFormDb = db.Tasks.Find(id);
             if (categoryFormDb == null)
             {
@@ -111,6 +131,31 @@ namespace ToDoListWeb.Controllers
             db.Tasks.Remove(item);
             db.SaveChanges();
             TempData["success"] = "Task deleted successfully";
+            return RedirectToAction("Index");
+        }
+        // POST
+        [HttpPost]
+        public IActionResult IsDone(int? id)
+        {
+            var item = db.Tasks.Find(id);
+            if (item == null)
+            {
+                return NotFound();
+            }
+            if (item.StatusId == "open")
+            {
+                // task's status changed by completed
+                item.StatusId = "closed";
+                TempData["success"] = "Task completed successfully.";
+            }
+            else if (item.StatusId == "closed")
+            {
+                // task's status changed by open
+                item.StatusId = "open";
+                TempData["success"] = "Task open successfully.";
+            }
+            db.Tasks.Update(item);
+            db.SaveChanges();
             return RedirectToAction("Index");
         }
     }
