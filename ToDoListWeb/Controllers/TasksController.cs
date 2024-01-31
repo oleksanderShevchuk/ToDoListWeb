@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using ToDoListWeb.Data;
 using ToDoListWeb.Models;
 
@@ -17,19 +18,48 @@ namespace ToDoListWeb.Controllers
             this.db = db;
             _userManager = userManager;
         }
-        public IActionResult Index()
+        public IActionResult Index(string? id)
         {
-            List<Tasks> CatagoreList = new List<Tasks>();
+            var filters = new FiltersTasks(id);
+            ViewBag.Filters = filters;
+            ViewBag.Categories = db.Categories;
+            ViewBag.Statuses = db.Statuses;
+            ViewBag.DueFilters = FiltersTasks.DueFilterValues;
+
             var user = db.Users.FirstOrDefault(u => u.UserName == User.Identity.Name);
 
-            foreach (var item in db.Tasks)
+            IQueryable<Tasks> query = db.Tasks
+                .Include(t => t.Category)
+                .Include(t => t.Status)
+                .Where(t => t.UserId == user.Id);
+
+            if (filters.HasCategory)
             {
-                if (item.UserId == user.Id)
+                query = query.Where(t => t.CategoryId == filters.CategoryId);
+            }
+            if (filters.HasStatus)
+            {
+                query = query.Where(t => t.StatusId == filters.StatusId);
+            }
+            if (filters.HasDue)
+            {
+                var today = DateTime.Today;
+                if (filters.IsPast)
                 {
-                    CatagoreList.Add(item);
+                    query = query.Where(t => t.DueDate < today);
+                }
+                else if (filters.IsToday)
+                {
+                    query = query.Where(t => t.DueDate == today);
+                }
+                else if (filters.IsFuture)
+                {
+                    query = query.Where(t => t.DueDate > today);
                 }
             }
-            return View(CatagoreList);
+            var tasks = query.OrderBy(t => t.DueDate).ToList();
+
+            return View(tasks);
         }
         // GET
         public IActionResult Details(int? id)
@@ -64,7 +94,7 @@ namespace ToDoListWeb.Controllers
             category.UserId = user.Id.ToString();
 
             if (ModelState.IsValid)
-            { 
+            {
                 db.Tasks.Add(category);
                 db.SaveChanges();
                 TempData["success"] = "Task created successfully";
@@ -157,6 +187,12 @@ namespace ToDoListWeb.Controllers
             db.Tasks.Update(item);
             db.SaveChanges();
             return RedirectToAction("Index");
+        }
+        [HttpPost]
+        public IActionResult Filter(string[] filter)
+        {
+            string id = string.Join('-', filter);
+            return RedirectToAction("Index", new { ID = id });
         }
     }
 }

@@ -21,7 +21,7 @@ namespace ToDoListWeb.Models
         [ValidateNever]
         public Category Category { get; set; } = null!;
         [Required(ErrorMessage = "Please enter a due date.")]
-        public DateTime? DueDate { get; set; } = DateTime.MinValue;
+        public DateTime? DueDate { get; set; }
         [Required(ErrorMessage = "Please enter a status.")]
         public string StatusId { get; set; } = string.Empty;
         [ValidateNever]
