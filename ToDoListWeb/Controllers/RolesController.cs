@@ -28,7 +28,7 @@ namespace ToDoListWeb.Controllers
         }
 
         [HttpGet]
-        public IActionResult Upsert(string id)  
+        public IActionResult Upsert(string? id)  
         {
             if (String.IsNullOrEmpty(id))
             {
