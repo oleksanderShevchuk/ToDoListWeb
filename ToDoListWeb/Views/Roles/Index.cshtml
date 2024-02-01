@@ -29,13 +29,13 @@
             @foreach (var item in Model)
             {
                 <tr>
-                    <td width="53%">
+                    <td>
                         @item.Id
                     </td>
-                    <td width="30%">
+                    <td>
                         @item.Name
                     </td>
-                    <td>
+                    <td width="20%">
                         <div class="text-center">
                             <form asp-action="Delete" asp-route-id="@item.Id">
                                 <a asp-action="Upsert" asp-route-id="@item.Id" class="btn btn-primary mx-2 rounded-2" 
