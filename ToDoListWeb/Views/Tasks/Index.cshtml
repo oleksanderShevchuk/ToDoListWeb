@@ -76,8 +76,8 @@
                             <td class="@overdue" width="15%">
                                 @item.Category.Name
                             </td>
-                            <td>
-                                <div class="btn-group" role="group">
+                            <td style="width:100%;text-align:center">
+                                <div class="btn-group" role="group" >
                                     <div class="text-center mx-2">
                                         <form asp-action="Delete" asp-route-id="@item.Id">
                                             @if (item.StatusId == "open")
@@ -98,8 +98,8 @@
                                             }
                                         </form>
                                     </div>
-                                    <a asp-controller="Tasks" asp-action="Edit" asp-route-id="@item.Id"
-                                       class="btn btn-primary mx-2 rounded-2"> <i class="bi bi-pencil-square"></i></a>
+                                    @* <a asp-controller="Tasks" asp-action="Edit" asp-route-id="@item.Id"
+                                       class="btn btn-primary mx-2 rounded-2"> <i class="bi bi-pencil-square"></i></a> *@
                                     <a asp-controller="Tasks" asp-action="Delete" asp-route-id="@item.Id"
                                        class="btn btn-danger mx-2 rounded-2"> <i class="bi bi-trash"></i></a>
                                 </div>
