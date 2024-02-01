@@ -36,19 +36,19 @@
                     <td>
                         @item.Role
                     </td>
-                    <td>
+                    <td width="30%">
                         <div class="text-center">
                             <form asp-action="Delete" asp-route-userId="@item.Id">
-                                <a asp-action="Edit" asp-route-userId="@item.Id" class="btn btn-primary mx-2 rounded-2" 
+                                <a asp-action="Edit" asp-route-userId="@item.Id" class="btn btn-primary mx-1 rounded-2" 
                                 style="cursor:pointer" width="50%"><i class="bi bi-pencil-square"></i> Edit</a>
 
-                                 <a asp-action="ManageUserClaims" asp-route-userId="@item.Id" class="btn btn-info text-white @*mx-2 rounded-2*@" 
+                                 <a asp-action="ManageUserClaims" asp-route-userId="@item.Id" class="btn btn-info text-white mx-1 rounded-2" 
                                 style="cursor:pointer" width="50%">Claim</a>
 
                                 @if (item.LockoutEnd == null || item.LockoutEnd < DateTime.Now)
                                 {
                                     // we want to show them the option to lock
-                                    <button asp-action="LockUnlock" asp-route-userId="@item.Id" class="btn btn-success text-white"
+                                    <button asp-action="LockUnlock" asp-route-userId="@item.Id" class="btn btn-success text-white mx-1 rounded-2"
                                         style="cursor:pointer">
                                         <i class="bi bi-lock"></i>
                                         <span>&nbsp; Lock &nbsp;</span>
@@ -57,7 +57,7 @@
                                 else
                                 {
                                     // we want to show them the option to unlock
-                                    <button asp-action="LockUnlock" asp-route-userId="@item.Id" class="btn btn-warning text-white"
+                                    <button asp-action="LockUnlock" asp-route-userId="@item.Id" class="btn btn-warning text-white mx-1 rounded-2"
                                         style="cursor:pointer">
                                         <i class="bi bi-unlock"></i>
                                         <span>Unlock</span>
