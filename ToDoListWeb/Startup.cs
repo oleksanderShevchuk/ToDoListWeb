@@ -45,7 +45,15 @@ namespace ToDoListWeb
             services.AddAuthorization(options =>
             {
                 options.AddPolicy(PolicyAccess.UserClaimOrAdmin, policy => policy.RequireAssertion(context =>
-                AuthorizeUser(context)));
+                    AuthorizeUser(context)));
+                options.AddPolicy(PolicyAccess.CreateClaim, policy => policy.RequireAssertion(context =>
+                    AuthorizeUser(context)));
+                options.AddPolicy(PolicyAccess.EditClaim, policy => policy.RequireAssertion(context =>
+                    AuthorizeUser(context)));
+                options.AddPolicy(PolicyAccess.DeleteClaim, policy => policy.RequireAssertion(context =>
+                    AuthorizeUser(context)));
+                options.AddPolicy(PolicyAccess.LockUnlockClaim, policy => policy.RequireAssertion(context =>
+                    AuthorizeUser(context)));
 
             });
             services.AddControllersWithViews(option => option.Filters.Add(new ValidationFilter()));

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using ToDoListWeb.Data;
+using ToDoListWeb.Filters;
 using ToDoListWeb.Models;
 
 namespace ToDoListWeb.Controllers
@@ -32,12 +33,14 @@ namespace ToDoListWeb.Controllers
             return View(CatagoreList);
         }
         // GET
+        [Authorize(Policy = PolicyAccess.CreateClaim)]
         public IActionResult Create()
         {
             return View();
         }
         // POST
         [HttpPost]
+        [ClaimRequirements(Claims.Create)]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Tasks category)
         {
@@ -55,6 +58,7 @@ namespace ToDoListWeb.Controllers
             return View(category);
         }
         // GET
+        [Authorize(Policy = PolicyAccess.EditClaim)]
         public IActionResult Edit(int? id)
         {
             if (id == null || id == 0)
@@ -70,6 +74,7 @@ namespace ToDoListWeb.Controllers
         }
         // POST
         [HttpPost]
+        [ClaimRequirements(Claims.Edit)]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Tasks category)
         {
@@ -85,6 +90,7 @@ namespace ToDoListWeb.Controllers
             return View(category);
         }
         // GET
+        [Authorize(Policy = PolicyAccess.DeleteClaim)]
         public IActionResult Delete(int? id)
         {
             if (id == null || id == 0)
@@ -100,6 +106,7 @@ namespace ToDoListWeb.Controllers
         }
         // POST
         [HttpPost, ActionName("Delete")]
+        [ClaimRequirements(Claims.Delete)]
         [ValidateAntiForgeryToken]
         public IActionResult DeletePost(int? id)
         {

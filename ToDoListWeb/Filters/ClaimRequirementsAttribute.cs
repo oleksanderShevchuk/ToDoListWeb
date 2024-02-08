@@ -16,7 +16,7 @@ namespace ToDoListWeb.Filters
             var user = context.HttpContext.User;
             if (user == null || !user.HasClaim(c => c.Type == Claim && c.Value == bool.TrueString))
             {
-                context.Result = new BadRequestResult();
+                context.Result = new RedirectResult("~/api/access_deny");
                 return;
             }
             await next();

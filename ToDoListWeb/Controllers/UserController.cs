@@ -40,7 +40,8 @@ namespace ToDoListWeb.Controllers
             }
             return View(userList);
         }
-
+        [HttpGet]
+        [Authorize(Policy = PolicyAccess.EditClaim)]
         public IActionResult Edit(string userId)
         {
             var objFromDb = _db.ApplicationUser.FirstOrDefault(u => u.Id == userId);
@@ -90,6 +91,7 @@ namespace ToDoListWeb.Controllers
         
         [HttpPost]
         [ClaimRequirements(Claims.LockUnlock)]
+        [Authorize(Policy = PolicyAccess.LockUnlockClaim)]
         public IActionResult LockUnlock(string userId)
         {
             var objFromDb = _db.ApplicationUser.FirstOrDefault(u => u.Id == userId);
@@ -116,6 +118,7 @@ namespace ToDoListWeb.Controllers
 
         [HttpPost]
         [ClaimRequirements(Claims.Delete)]
+        [Authorize(Policy = PolicyAccess.DeleteClaim)]
         public IActionResult Delete(string userId)
         {
             var objFromDb = _db.ApplicationUser.FirstOrDefault(u => u.Id == userId);
@@ -130,6 +133,7 @@ namespace ToDoListWeb.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy = PolicyAccess.UserClaimOrAdmin)]
         public async Task<IActionResult> ManageUserClaims(string userid)
         {
             IdentityUser user = await _userManager.FindByIdAsync(userid);

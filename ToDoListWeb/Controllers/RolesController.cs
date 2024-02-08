@@ -28,6 +28,7 @@ namespace ToDoListWeb.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy = PolicyAccess.UserClaimOrAdmin)]
         public IActionResult Upsert(string? id)  
         {
             if (String.IsNullOrEmpty(id))
@@ -77,6 +78,7 @@ namespace ToDoListWeb.Controllers
 
         [HttpPost]
         [ClaimRequirements(Claims.Delete)]
+        [Authorize(Policy = PolicyAccess.DeleteClaim)]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(string id)
         {
