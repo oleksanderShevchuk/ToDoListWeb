@@ -58,4 +58,8 @@
     <None Include="Views\AccessChecker\UserAndAdminAccess.cshtml" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\lib\microsoft\signalr\dist\browser\" />
+  </ItemGroup>
+
 </Project>

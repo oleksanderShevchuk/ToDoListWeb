@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using ToDoListWeb.Authorize;
 using ToDoListWeb.Data;
 using ToDoListWeb.Filters;
+using ToDoListWeb.Hubs;
 using ToDoListWeb.Service;
 
 namespace ToDoListWeb
@@ -57,6 +58,7 @@ namespace ToDoListWeb
 
             });
             services.AddControllersWithViews(option => option.Filters.Add(new ValidationFilter()));
+            services.AddSignalR();
             services.AddRazorPages();
         }
 
@@ -78,6 +80,7 @@ namespace ToDoListWeb
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
+                endpoints.MapHub<UserHub>("/hubs/userCount");
             });
         }
 
