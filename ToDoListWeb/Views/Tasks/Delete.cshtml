@@ -7,8 +7,25 @@
             <h2 class="text-primary">Delete task</h2>
             <hr />
         </div>
-        <div class="mb-3">
-            <input asp-for="Name" disabled class="form-control" />
+        <div class="mb-2">
+            <label accesskey="Title">Title</label>
+            <input asp-for="Title" disabled class="form-control"/>
+        </div>
+        <div class="mb-2">
+            <label accesskey="Description">Description</label>
+            <input asp-for="Description" disabled class="form-control" />
+        </div>
+        <div class="mb-2">
+            <label accesskey="DueDate">DueDate</label>
+            <input asp-for="DueDate" disabled class="form-control" />
+        </div>
+        <div class="mb-2">
+            <label accesskey="CategoryId">Category</label>
+            <input asp-for="CategoryId" disabled class="form-control" />
+        </div>
+        <div class="mb-2">
+            <label accesskey="StatusId">Status</label>
+            <input asp-for="StatusId" disabled class="form-control" />
         </div>
         <button type="submit" class="btn btn-danger" style="width:150px">Delete</button>
         <a asp-controller="Tasks" asp-action="Index" class="btn btn-secondary" style="width:150px">

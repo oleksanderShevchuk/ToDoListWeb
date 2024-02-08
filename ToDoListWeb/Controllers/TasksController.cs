@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using ToDoListWeb.Data;
 using ToDoListWeb.Filters;
 using ToDoListWeb.Models;
@@ -18,24 +19,71 @@ namespace ToDoListWeb.Controllers
             this.db = db;
             _userManager = userManager;
         }
-        public IActionResult Index()
+        public IActionResult Index(string? id)
         {
-            List<Tasks> CatagoreList = new List<Tasks>();
+            var filters = new FiltersTasks(id);
+            ViewBag.Filters = filters;
+            ViewBag.Categories = db.Categories;
+            ViewBag.Statuses = db.Statuses;
+            ViewBag.DueFilters = FiltersTasks.DueFilterValues;
+
             var user = db.Users.FirstOrDefault(u => u.UserName == User.Identity.Name);
 
-            foreach (var item in db.Tasks)
+            IQueryable<Tasks> query = db.Tasks
+                .Include(t => t.Category)
+                .Include(t => t.Status)
+                .Where(t => t.UserId == user.Id);
+
+            if (filters.HasCategory)
             {
-                if (item.UserId == user.Id)
+                query = query.Where(t => t.CategoryId == filters.CategoryId);
+            }
+            if (filters.HasStatus)
+            {
+                query = query.Where(t => t.StatusId == filters.StatusId);
+            }
+            if (filters.HasDue)
+            {
+                var today = DateTime.Today;
+                if (filters.IsPast)
                 {
-                    CatagoreList.Add(item);
+                    query = query.Where(t => t.DueDate < today);
+                }
+                else if (filters.IsToday)
+                {
+                    query = query.Where(t => t.DueDate == today);
+                }
+                else if (filters.IsFuture)
+                {
+                    query = query.Where(t => t.DueDate > today);
                 }
             }
-            return View(CatagoreList);
+            var tasks = query.OrderBy(t => t.DueDate).ToList();
+
+            return View(tasks);
+        }
+        // GET
+        public IActionResult Details(int? id)
+        {
+            if (id == null || id == 0)
+            {
+                return NotFound();
+            }
+            ViewBag.Categories = db.Categories;
+            ViewBag.Statuses = db.Statuses;
+            var categoryFormDb = db.Tasks.Find(id);
+            if (categoryFormDb == null)
+            {
+                return NotFound();
+            }
+            return View(categoryFormDb);
         }
         // GET
         [Authorize(Policy = PolicyAccess.CreateClaim)]
         public IActionResult Create()
         {
+            ViewBag.Categories = db.Categories;
+            ViewBag.Statuses = db.Statuses;
             return View();
         }
         // POST
@@ -49,7 +97,7 @@ namespace ToDoListWeb.Controllers
             category.UserId = user.Id.ToString();
 
             if (ModelState.IsValid)
-            { 
+            {
                 db.Tasks.Add(category);
                 db.SaveChanges();
                 TempData["success"] = "Task created successfully";
@@ -65,6 +113,8 @@ namespace ToDoListWeb.Controllers
             {
                 return NotFound();
             }
+            ViewBag.Categories = db.Categories;
+            ViewBag.Statuses = db.Statuses;
             var categoryFormDb = db.Tasks.Find(id);
             if (categoryFormDb == null)
             {
@@ -119,6 +169,37 @@ namespace ToDoListWeb.Controllers
             db.SaveChanges();
             TempData["success"] = "Task deleted successfully";
             return RedirectToAction("Index");
+        }
+        // POST
+        [HttpPost]
+        public IActionResult IsDone(int? id)
+        {
+            var item = db.Tasks.Find(id);
+            if (item == null)
+            {
+                return NotFound();
+            }
+            if (item.StatusId == "open")
+            {
+                // task's status changed by completed
+                item.StatusId = "closed";
+                TempData["success"] = "Task completed successfully.";
+            }
+            else if (item.StatusId == "closed")
+            {
+                // task's status changed by open
+                item.StatusId = "open";
+                TempData["success"] = "Task open successfully.";
+            }
+            db.Tasks.Update(item);
+            db.SaveChanges();
+            return RedirectToAction("Index");
+        }
+        [HttpPost]
+        public IActionResult Filter(string[] filter)
+        {
+            string id = string.Join('-', filter);
+            return RedirectToAction("Index", new { ID = id });
         }
     }
 }
